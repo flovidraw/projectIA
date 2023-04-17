@@ -19,6 +19,7 @@ class _VocalPageState extends State<VocalPage> {
 
   void _initSpeechRecognizer() async {
     bool available = await _speech.initialize(
+      onStatus: (status) => print('onStatus: $status'),
       onError: (error) => print('onError: $error'),
     );
 
@@ -30,7 +31,7 @@ class _VocalPageState extends State<VocalPage> {
         }),
       );
     } else {
-      print('Speech recognition is not available on this device.');
+      print('The user has denied the use of speech recognition.');
     }
   }
 
@@ -44,80 +45,22 @@ class _VocalPageState extends State<VocalPage> {
     return Scaffold(
       appBar: AppBar(
         title: Text('Vocal Page'),
-        backgroundColor: Colors.deepPurple,
       ),
       body: Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 32.0),
-              child: GestureDetector(
-                onTap: () {
-                  if (!_isListening) {
-                    _initSpeechRecognizer();
-                  }
-                },
-                child: Container(
-                  padding: EdgeInsets.all(20),
-                  decoration: BoxDecoration(
-                      color: Colors.deepPurple,
-                      borderRadius: BorderRadius.circular(12),
-                      boxShadow: [
-                        BoxShadow(
-                          color: Colors.grey,
-                          spreadRadius: 1,
-                          blurRadius: 1,
-                          offset: Offset(1, 1),
-                        ),
-                      ]),
-                  child: Center(
-                      child: Text(
-                    'Start listening',
-                    style: TextStyle(
-                      color: Colors.white,
-                      fontWeight: FontWeight.bold,
-                      fontSize: 20,
-                    ),
-                  )),
-                ),
-              ),
+            ElevatedButton(
+              child: Text('Start listening'),
+              onPressed: () {
+                if (!_isListening) {
+                  _initSpeechRecognizer();
+                }
+              },
             ),
-            SizedBox(
-              height: 45,
-            ),
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 32.0),
-              child: GestureDetector(
-                onTap: () {
-                  if (_isListening) {
-                    _stopSpeechRecognizer();
-                  }
-                },
-                child: Container(
-                  padding: EdgeInsets.all(20),
-                  decoration: BoxDecoration(
-                      color: Colors.grey,
-                      borderRadius: BorderRadius.circular(12),
-                      boxShadow: [
-                        BoxShadow(
-                          color: Colors.grey,
-                          spreadRadius: 1,
-                          blurRadius: 1,
-                          offset: Offset(1, 1),
-                        ),
-                      ]),
-                  child: Center(
-                      child: Text(
-                    'Stop listening',
-                    style: TextStyle(
-                      color: Colors.white,
-                      fontWeight: FontWeight.bold,
-                      fontSize: 20,
-                    ),
-                  )),
-                ),
-              ),
+            ElevatedButton(
+              child: Text('Stop listening'),
+              onPressed: _isListening ? _stopSpeechRecognizer : null,
             ),
             Text(_text),
           ],
